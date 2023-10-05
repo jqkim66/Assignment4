@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Feedback</title>
+	<style>
+		label {
+			float: left;
+			width: 150px;
+		}
+
+		#container {
+			width: 700px;
+			margin: auto;
+			background-color: beige;
+		}
+
+		main {
+			padding: 50px;
+		}
+
+		.error-text {
+			color: red;
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container">
+
+		<main>
+			<h2>Feeback</h2>
+			<h3>Love something? Hate something? Let us know!</h3>
+			Note : Fields marked with an asterisk(*) are mandatory
+			<br><br>
+			<form method="post" novalidate onsubmit="return validateForm(event)">
+
+				<label>Title*:</label>
+				<input type="radio" name="title" id="miss" value="miss" required="required" />Miss
+				<input type="radio" name="title" id="mr" value="mr" required="required" />Mr.
+				<input type="radio" name="title" id="mrs" value="mrs" required="required" />Mrs.
+				<br><span id="titleError" class="error-text"></span><br>
+				<label for="firstName">First Name*:</label>
+				<input type="text" name="firstName" id="firstName" placeholder="First Name" required minlength="2"
+					maxlength="50" />
+				<span id="firstNameError" class="error-text"></span>
+				<br><br>
+
+
+				<label for="lastName">Last Name*:</label>
+				<input type="text" name="lastName" id="lastName" placeholder="Last Name" required minlength="2"
+					maxlength="50" />
+				<span id="lastNameError" class="error-text"></span>
+				<br><br>
+
+
+				<label for="email">Email Id*:</label>
+				<input type="text" name="email" id="email" placeholder="@northeastern.edu" required
+					pattern="^[a-zA-Z0-9._\\u002D]+@northeastern\.edu$" />
+				<span id="emailError" class="error-text"></span>
+				<br><br>
+
+
+				<label for="phoneNumber">Phone Number*:</label>
+				<input type="text" name="phoneNumber" id="phoneNumber" placeholder="xxx-xxx-xxxx" required
+					pattern="^\d{3}-\d{3}-\d{4}$" />
+				<span id="phoneNumberError" class="error-text"></span>
+				<br><br>
+
+				<label for="address1">Street Address 1*:</label>
+				<input type="text" name="address1" id="address1" placeholder="address" required minlength="2"
+					maxlength="50" />
+				<span id="address1Error" class="error-text"></span>
+				<br><br>
+
+				<label for="address2">Street Address 2:</label>
+				<input type="text" name="address2" id="address2" placeholder="address" minlength="2" maxlength="50" />
+				<span id="address2Error" class="error-text"></span>
+				<br><br>
+
+				<label for="zipcode">ZipCode*:</label>
+				<input type="text" name="zipcode" id="zipcode" placeholder="xxxxx" required pattern="^\d{5}$" />
+				<span id="zipcodeError" class="error-text"></span>
+				<br><br>
+
+				<label>How did you hear*:</label>
+				<input type='checkbox' name="source" value="facebook" /> Facebook
+				<input type='checkbox' name="source" value="google" /> Google
+				<input type='checkbox' name="source" value="yelp" /> Yelp
+				<span id="sourceError" class="error-text"></span>
+				<br><br>
+
+				<label for="comments">Comments*:</label>
+				<textarea name="ratingComment" id="comments" placeholder="Your comments" rows="5" cols="25" required
+					minlength="5" maxlength="500"></textarea>
+				<span id="commentsError" class="error-text"></span>
+				<br><br>
+
+				<label for="selectList">Select an Option*:</label>
+				<select id="selectList" name="rating" onchange="handleSelectChange()" required>
+					<option value="" selected disabled hidden>Select...</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+				</select>
+				<br><span id="selectListError" class="error-text"></span>
+				<br><br>
+				<input type="Submit" disabled>
+				<input type="Reset">
+				<br><br>
+			</form>
+		</main>
+	</div>
+
+	<script>
+		const submitBtn = document.querySelector('input[type="Submit"]');
+
+		function checkAllValidations() {
+			let isValid = true;
+
+			const formElements = document.querySelectorAll('input, textarea');
+
+			for (let element of formElements) {
+				const errorElementId = element.id + "Error";
+				const errorElement = document.getElementById(errorElementId);
+
+				if (errorElement) {
+					if (!element.checkValidity()) {
+						errorElement.textContent = "Please fill in this field correctly.";
+						errorElement.style.display = "block";
+						isValid = false;
+					} else {
+						errorElement.textContent = "";
+						errorElement.style.display = "none";
+					}
+				}
+			}
+
+			let titleChecked = document.querySelector('input[name="title"]:checked');
+			let titleError = document.getElementById('titleError');
+			if (!titleChecked) {
+				titleError.textContent = "Please select a title.";
+				titleError.style.display = "inline"; // show error text
+				isValid = false;
+			} else {
+				titleError.textContent = "";
+				titleError.style.display = "none"; // hide error text
+			}
+
+			var checkboxes = document.querySelectorAll('input[name="source"]:checked');
+			const checkboxErrorElement = document.getElementById("sourceError");
+			if (checkboxes.length === 0) {
+				checkboxErrorElement.textContent = "Select at least one checkbox";
+				checkboxErrorElement.style.display = "block";
+				isValid = false;
+			} else {
+				checkboxErrorElement.textContent = "";
+				checkboxErrorElement.style.display = "none";
+			}
+
+			let selectListValue = document.getElementById('selectList').value;
+			let selectListError = document.getElementById('selectListError');
+			if (!selectListValue) {
+				selectListError.textContent = "Please select an option.";
+				selectListError.style.display = "inline"; // show error text
+				isValid = false;
+			} else {
+				selectListError.textContent = "";
+				selectListError.style.display = "none"; // hide error text
+			}
+
+			let dynamicCheckbox = document.getElementById('dynamicCheckbox');
+			let dynamicTextbox = document.getElementById('dynamicTextbox');
+			if (dynamicCheckbox && dynamicTextbox) {
+				if (dynamicCheckbox.checked && !dynamicTextbox.value.trim()) {
+					isValid = false;
+					// 显示错误消息
+					let errorElement = dynamicTextbox.nextSibling;
+					if (!errorElement || errorElement.className !== "error-text") {
+						errorElement = document.createElement('span');
+						errorElement.className = "error-text";
+						errorElement.textContent = "Please fill in the comment.";
+						errorElement.style.display = "block";
+						dynamicTextbox.parentNode.insertBefore(errorElement, dynamicTextbox.nextSibling);
+					}
+				} else {
+					// 移除可能存在的错误消息
+					let errorElement = dynamicTextbox.nextSibling;
+					if (errorElement && errorElement.className === "error-text") {
+						dynamicTextbox.parentNode.removeChild(errorElement);
+					}
+				}
+			}
+
+			const alphanumeric = /^[a-z0-9]+$/i;
+			let firstName = document.getElementById('firstName').value;
+			let lastName = document.getElementById('lastName').value;
+			if (!firstName.match(alphanumeric) || !lastName.match(alphanumeric)) {
+				isValid = false;
+			}
+
+			return isValid;
+		}
+
+
+		function updateSubmitButton() {
+			if (checkAllValidations()) {
+				submitBtn.removeAttribute('disabled');
+			} else {
+				submitBtn.setAttribute('disabled', 'true');
+			}
+		}
+
+
+
+		function handleSelectChange() {
+			let checkbox = document.getElementById('dynamicCheckbox');
+			let textbox = document.getElementById('dynamicTextbox');
+
+			// 如果复选框不存在，则创建它
+			if (!checkbox) {
+				checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.id = 'dynamicCheckbox';
+				checkbox.onchange = handleCheckboxChange;
+
+				let checkboxLabel = document.createElement('label');
+				checkboxLabel.htmlFor = 'dynamicCheckbox';
+
+				textbox = document.createElement('textarea');
+				textbox.id = 'dynamicTextbox';
+				textbox.style.display = 'none';
+				textbox.required = true;
+				textbox.name = 'ratingComment';
+				textbox.setAttribute('rows', '5');
+				textbox.setAttribute('cols', '25');
+				textbox.setAttribute('minlength', '5');
+				textbox.setAttribute('maxlength', '500');
+
+
+				let selectList = document.getElementById('selectList');
+				let breakElement = document.createElement('br');
+				insertAfter(selectList, breakElement); // 插入<br>标签在selectList之后
+				insertAfter(breakElement, checkbox);
+				insertAfter(checkbox, checkboxLabel);
+
+				let breakElement2 = document.createElement('br');  // 创建第二个<br>标签
+				insertAfter(checkboxLabel, breakElement2);  // 插入第二个<br>标签在checkboxLabel之后
+				insertAfter(breakElement2, textbox);
+				textbox.addEventListener('input', updateSubmitButton);
+				checkbox.addEventListener('change', updateSubmitButton); // 为动态复选框添加事件监听器
+			}
+
+			const selectedValue = document.getElementById('selectList').value;
+			let checkboxLabel = checkbox.nextSibling;
+			checkboxLabel.textContent = 'Rating Comment';
+			updateSubmitButton();
+		}
+
+		function insertAfter(referenceNode, newNode) {
+			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+		}
+		function handleCheckboxChange(event) {
+			const textbox = document.getElementById('dynamicTextbox');
+			if (event.target.checked) {
+				textbox.style.display = 'inline';
+				textbox.setAttribute('required', true);
+			} else {
+				textbox.style.display = 'none';
+				textbox.value = ''; // 清空文本框的值
+				textbox.removeAttribute('required');
+			}
+			updateSubmitButton(); // 检查所有验证，决定是否启用提交按钮
+		}
+		// Add event listeners
+		const formElements = document.querySelectorAll('input, textarea');
+		for (let element of formElements) {
+			element.addEventListener('input', updateSubmitButton);
+		}
+
+
+		function validateForm() {
+			event.preventDefault();  // 取消默认的表单提交
+			if (checkAllValidations()) {
+				createTableFromFormData();
+				clearForm();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function clearForm() {
+			const form = document.querySelector('form');
+			form.reset();
+
+			// Handle any additional form fields created dynamically 
+			const dynamicTextbox = document.getElementById('dynamicTextbox');
+			if (dynamicTextbox) {
+				dynamicTextbox.style.display = 'none';  // Hide the dynamic textbox
+			}
+			const dynamicCheckbox = document.getElementById('dynamicCheckbox');
+			if (dynamicCheckbox) {
+				dynamicCheckbox.checked = false;  // Uncheck the dynamic checkbox
+			}
+		}
+
+		function createTableFromFormData() {
+			const formData = new FormData(document.querySelector('form'));
+			let table = document.querySelector('table');
+
+			// 如果表格不存在，则创建一个新的
+			if (!table) {
+				table = document.createElement('table');
+				table.border = "1";
+				document.body.appendChild(table);
+
+				// 创建行用于表单字段名
+				const headerRow = table.insertRow();
+				for (let [key] of formData.entries()) {
+					const cell = headerRow.insertCell();
+					cell.textContent = key;
+				}
+			}
+
+			// 创建行用于表单字段值
+			const valueRow = table.insertRow();
+			for (let [, value] of formData.entries()) {
+				const cell = valueRow.insertCell();
+				cell.textContent = value;
+			}
+		}
+
+
+	</script>
+
+</body>
+
+</html>
